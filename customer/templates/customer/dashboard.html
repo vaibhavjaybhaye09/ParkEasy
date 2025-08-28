@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}Customer Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+  <h2 class="mb-2">Customer Dashboard</h2>
+  <p>Welcome, {{ user.username }}.</p>
+
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Total Bookings</h5>
+          <p class="card-text">{{ total_bookings }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Upcoming</h5>
+          <p class="card-text">{{ upcoming_bookings }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Search Parking</h5>
+          <p class="card-text">Find available places by city, area, vehicle.</p>
+          <a href="{% url 'customer_search' %}" class="btn btn-primary btn-sm">Open Search</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Quick Actions</h5>
+          <ul class="mb-0">
+            <li><a href="{% url 'customer_my_bookings' %}">View My Bookings</a></li>
+            <li><a href="{% url 'customer_profile_edit' %}">Edit Profile</a></li>
+            <li><a href="{% url 'customer_settings' %}">Settings</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Recent Bookings</h5>
+          {% if recent_bookings %}
+          <ul class="mb-0">
+            {% for b in recent_bookings %}
+            <li>#{{ b.id }} - {{ b.slot.place.name }} ({{ b.start_time }})</li>
+            {% endfor %}
+          </ul>
+          <p class="mt-2"><a href="{% url 'customer_my_bookings' %}">Go to Booking History</a></p>
+          {% else %}
+          <p>No recent bookings.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

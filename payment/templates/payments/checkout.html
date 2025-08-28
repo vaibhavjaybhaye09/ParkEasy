@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Checkout{% endblock %}
+{% block content %}
+<h3>Checkout</h3>
+<p>Booking #{{ booking.id }} - Amount: ₹{{ amount }}</p>
+<form method="post">
+  {% csrf_token %}
+  <button class="btn btn-primary" type="submit">Pay</button>
+</form>
+{% endblock %}

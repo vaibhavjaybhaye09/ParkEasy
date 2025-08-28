@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}Edit Parking Place{% endblock %}
+{% block content %}
+<h3>Edit Parking Place</h3>
+<form method="post">
+  {% csrf_token %}
+  <div>
+    <label for="id_name">Name</label>
+    {{ form.name }}
+    {{ form.name.errors }}
+  </div>
+  <div>
+    <label for="id_address">Address</label>
+    {{ form.address }}
+    {{ form.address.errors }}
+  </div>
+  <div>
+    <label for="id_city">City</label>
+    {{ form.city }}
+    {{ form.city.errors }}
+  </div>
+  <div id="area-field">
+    <label for="id_area">Area</label>
+    {{ form.area }}
+    {{ form.area.errors }}
+  </div>
+  <div>
+    <label for="id_price_per_hour">Price per hour</label>
+    {{ form.price_per_hour }}
+    {{ form.price_per_hour.errors }}
+  </div>
+  <div>
+    <label for="id_description">Description</label>
+    {{ form.description }}
+    {{ form.description.errors }}
+  </div>
+  <div>
+    <fieldset>
+      <legend>Allowed vehicle types</legend>
+      {{ form.allowed_vehicle_types_field }}
+    </fieldset>
+  </div>
+  <div>
+    <button type="submit">Save</button>
+  </div>
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var citySelect = document.getElementById('id_city');
+  var areaInput = document.getElementById('id_area');
+  function toggleAreaRequirement() {
+    var isPune = citySelect && citySelect.value === 'Pune';
+    if (areaInput) {
+      areaInput.required = !!isPune;
+    }
+  }
+  if (citySelect) {
+    citySelect.addEventListener('change', toggleAreaRequirement);
+    toggleAreaRequirement();
+  }
+});
+</script>
+{% endblock %}
+
+

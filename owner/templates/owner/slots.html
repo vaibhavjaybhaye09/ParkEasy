@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Manage Slots{% endblock %}
+{% block content %}
+<h3>Slots for {{ place.name }}</h3>
+<form method="post" class="mb-3">
+  {% csrf_token %}
+  <div class="input-group">
+    <input class="form-control" name="code" placeholder="New slot code (e.g., S101)">
+    <button class="btn btn-primary" type="submit">Add Slot</button>
+  </div>
+  </form>
+<table class="table">
+  <thead><tr><th>Code</th><th>Status</th><th>Price/hr</th><th></th></tr></thead>
+  <tbody>
+    {% for s in slots %}
+    <tr>
+      <td>{{ s.code }}</td>
+      <td>{% if s.is_available %}Available{% else %}Occupied{% endif %}</td>
+      <td>{{ s.price_per_hour|default:place.price_per_hour }}</td>
+      <td>
+        <a class="btn btn-sm btn-outline-secondary" href="/owner/slots/{{ s.id }}/edit/">Edit</a>
+        <a class="btn btn-sm btn-outline-danger" href="/owner/slots/{{ s.id }}/delete/">Delete</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+
