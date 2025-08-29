@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Owner Bookings{% endblock %}
+{% block content %}
+<h3>Bookings</h3>
+<table class="table">
+  <thead><tr><th>ID</th><th>Customer</th><th>Place</th><th>Slot</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+  <tbody>
+    {% for b in bookings %}
+    <tr>
+      <td>{{ b.id }}</td>
+      <td>{{ b.customer.username }}</td>
+      <td>{{ b.slot.place.name }}</td>
+      <td>{{ b.slot.code }}</td>
+      <td>{{ b.start_time }}</td>
+      <td>{{ b.end_time }}</td>
+      <td>{{ b.status }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">No bookings yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+

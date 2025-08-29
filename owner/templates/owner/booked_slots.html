@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}Booked Slots{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-car me-2"></i> Booked Slots</h2>
+        <a href="{% url 'owner_dashboard' %}" class="btn btn-outline-primary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Currently Booked Slots</h5>
+                </div>
+                <div class="card-body">
+                    {% if active_bookings %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Customer</th>
+                                        <th>Place</th>
+                                        <th>Slot Code</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Duration</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for booking in active_bookings %}
+                                    <tr>
+                                        <td>
+                                            <div>
+                                                <strong>{{ booking.customer.username }}</strong>
+                                                {% if booking.customer.phone %}
+                                                    <br><small class="text-muted">{{ booking.customer.phone }}</small>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <strong>{{ booking.slot.place.name }}</strong>
+                                                <br><small class="text-muted">{{ booking.slot.place.area }}, {{ booking.slot.place.city }}</small>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary">{{ booking.slot.code }}</span>
+                                        </td>
+                                        <td>{{ booking.start_time|date:"M d, H:i" }}</td>
+                                        <td>{{ booking.end_time|date:"M d, H:i" }}</td>
+                                        <td>
+                                            {% if booking.start_time and booking.end_time %}
+                                                {% widthratio booking.end_time|timeuntil:booking.start_time 1 1 %}
+                                            {% else %}
+                                                -
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if booking.status == 'active' %}
+                                                <span class="badge bg-success">Active</span>
+                                            {% elif booking.status == 'pending' %}
+                                                <span class="badge bg-warning">Pending</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">{{ booking.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-car fa-3x text-muted mb-3"></i>
+                            <p class="text-muted">No active bookings at the moment.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Stats</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <div class="border-end">
+                                <h4 class="text-primary">{{ active_bookings|length }}</h4>
+                                <small class="text-muted">Active Bookings</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="text-success">{{ booked_slots|length }}</h4>
+                            <small class="text-muted">Total Booked</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Actions</h5>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'owner_bookings' %}" class="btn btn-outline-primary w-100 mb-2">
+                        <i class="fas fa-list me-2"></i>View All Bookings
+                    </a>
+                    <a href="{% url 'owner_payments' %}" class="btn btn-outline-success w-100">
+                        <i class="fas fa-money-bill me-2"></i>View Payments
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

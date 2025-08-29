@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Place Details{% endblock %}
+{% block content %}
+<h3>{{ place.name }}</h3>
+<p>{{ place.address }}, {{ place.area }}, {{ place.city }}</p>
+<h5>Slots</h5>
+<table class="table">
+  <thead><tr><th>Code</th><th>Status</th><th>Price/hr</th><th></th></tr></thead>
+  <tbody>
+    {% for s in slots %}
+    <tr>
+      <td>{{ s.code }}</td>
+      <td>{% if s.is_available %}<span class="badge bg-success">Available</span>{% else %}<span class="badge bg-secondary">Booked</span>{% endif %}</td>
+      <td>₹{{ s.price_per_hour|default:place.price_per_hour }}</td>
+      <td>
+        {% if s.is_available %}
+        <a class="btn btn-sm btn-primary" href="/customer/book/{{ s.id }}/">Book</a>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+  </table>
+{% endblock %}
+

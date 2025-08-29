@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Edit Parking Place{% endblock %}
+{% block content %}
+<div class="container">
+	<h3 class="mb-3">Edit Parking Place</h3>
+	<form method="post" class="row g-3">
+	  {% csrf_token %}
+	  <div class="col-md-6">
+		<label for="id_name" class="form-label">Name</label>
+		{{ form.name }}
+		{{ form.name.errors }}
+	  </div>
+	  <div class="col-md-6">
+		<label for="id_city" class="form-label">City</label>
+		{{ form.city }}
+		{{ form.city.errors }}
+	  </div>
+	  <div class="col-12">
+		<label for="id_address" class="form-label">Address</label>
+		{{ form.address }}
+		{{ form.address.errors }}
+	  </div>
+	  <div class="col-md-6">
+		<label for="id_area" class="form-label">Area</label>
+		{{ form.area }}
+		{{ form.area.errors }}
+	  </div>
+	  <div class="col-md-6">
+		<label for="id_price_per_hour" class="form-label">Price per hour</label>
+		{{ form.price_per_hour }}
+		{{ form.price_per_hour.errors }}
+	  </div>
+	  <div class="col-12">
+		<label for="id_description" class="form-label">Description</label>
+		{{ form.description }}
+		{{ form.description.errors }}
+	  </div>
+	  <div class="col-12">
+		<fieldset>
+		  <legend>Allowed vehicle types</legend>
+		  {{ form.allowed_vehicle_types_field }}
+		</fieldset>
+	  </div>
+	  <div class="col-12">
+		<button type="submit" class="btn btn-primary">Save</button>
+	  </div>
+	</form>
+
+	<script>
+		// Keep Pune area validation client-side
+		document.addEventListener('DOMContentLoaded', function () {
+		  var citySelect = document.getElementById('id_city');
+		  var areaInput = document.getElementById('id_area');
+		  function toggleAreaRequirement() {
+			var isPune = citySelect && citySelect.value === 'Pune';
+			if (areaInput) {
+			  areaInput.required = !!isPune;
+			}
+		  }
+		  if (citySelect) {
+			citySelect.addEventListener('change', toggleAreaRequirement);
+			toggleAreaRequirement();
+		  }
+		});
+	</script>
+</div>
+{% endblock %}
+
+

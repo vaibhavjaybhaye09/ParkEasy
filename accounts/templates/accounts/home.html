@@ -1,0 +1,353 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home · ParkEasy{% endblock %}
+{% block content %}
+<style>
+  /* Full width carousel styles with reduced height */
+#home{
+    width: 100%;
+    height: 100%;
+}
+  #home.carousel {
+    width: 100%;
+    height: 80vh; /* Reduced from 100vh to 80vh */
+    margin-top: -80px; /* Compensate for fixed navbar */
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .carousel-item {
+    width: 100%;
+    height: 80vh; /* Match carousel height */
+  }
+  
+  .carousel-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  
+  .carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 10;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  .carousel-caption h1 {
+    font-size: 3.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+  }
+  
+  .carousel-caption p {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  /* Button styles */
+  .btn-gradient {
+    display: inline-block;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(45deg, #1e3a8a, #3b82f6);
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .btn-gradient:hover {
+    background: linear-gradient(45deg, #3b82f6, #1e3a8a);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    color: white;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    #home.carousel {
+      height: 70vh; /* Even smaller on mobile */
+    }
+    
+    .carousel-item {
+      height: 70vh;
+    }
+    
+    .carousel-caption h1 {
+      font-size: 2.5rem;
+    }
+    
+    .carousel-caption p {
+      font-size: 1.2rem;
+    }
+    
+    .btn-gradient {
+      padding: 12px 30px;
+      font-size: 1rem;
+    }
+  }
+  
+  /* Search section */
+  #search { 
+    margin-top: 40px; 
+  }
+  
+  .search-form {
+    background: #fff; 
+    border-radius: 12px; 
+    padding: 2rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,.1);
+    max-width: 600px; 
+    width: 90%; 
+    margin: 2rem auto; 
+    transition: transform .3s ease;
+  }
+  
+  .search-form:hover { 
+    transform: translateY(-4px); 
+  }
+  
+  /* Feature + Register styles */
+  .feature-text p { 
+    font-size: 1rem; 
+    color: #374151; 
+    margin-bottom: .5rem; 
+  }
+  
+  .register-section h2 { 
+    color: #1e3a8a; 
+  }
+</style>
+
+<!-- ================= HERO CAROUSEL ================= -->
+<section id="home" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+  <!-- Indicators -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#home" data-bs-slide-to="0" class="active" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#home" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#home" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+
+  <!-- Slides -->
+  <div class="carousel-inner">
+    <!-- Slide 1 -->
+    <div class="carousel-item active">
+      <img src="{% static 'accounts/images/crou3.jpg' %}" alt="Parking Slide 1">
+      <div class="carousel-caption">
+        <h1>Find Parking in Seconds</h1>
+        <p>Locate available parking spots near you with ParkEasy.</p>
+        <a href="#search" class="btn-gradient">🚗 Search Now</a>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="carousel-item">
+      <img src="{% static 'accounts/images/parking1.jpg' %}" alt="Parking Slide 2">
+      <div class="carousel-caption">
+        <h1>Book with Confidence</h1>
+        <p>Reserve your spot with secure payments and real-time updates.</p>
+        <a href="#search" class="btn-gradient">✅ Book Now</a>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="carousel-item">
+      <img src="{% static 'accounts/images/parking2.jpg' %}" alt="Parking Slide 3">
+      <div class="carousel-caption">
+        <h1>Smart Parking Solutions</h1>
+        <p>Reduce congestion with our intelligent parking platform.</p>
+        <a href="#register" class="btn-gradient">ℹ️ Learn More</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#home" data-bs-slide="prev" aria-label="Previous">
+    <span class="carousel-control-prev-icon"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#home" data-bs-slide="next" aria-label="Next">
+    <span class="carousel-control-next-icon"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</section>
+
+<!-- ================= SEARCH SECTION ================= -->
+
+{% if request.user.role == 'place_owner' %}
+  <!-- Don't show search section for owners -->
+{% else %}
+<section id="search" class="py-5">
+  <div class="search-form">
+    <h2 class="h2 text-center text-dark mb-4">
+      <i class="fas fa-search me-2"></i> Find Your Parking Spot
+    </h2>
+    
+    {% if request.user.is_authenticated and request.user.role == 'customer' %}
+      <!-- Authenticated customers - show search form with booking links -->
+      <form action="{% url 'customer_search' %}" method="GET">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label class="form-label fw-bold">Select City</label>
+          <select class="form-select" name="city">
+            <option value="">Choose a city...</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Pune">Pune</option>
+            <option value="Jalna">Jalna</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Enter Area/Neighborhood</label>
+          <input type="text" class="form-control" name="area" placeholder="Enter area">
+        </div>
+        <div class="mb-3">
+          <label class="form-label fw-bold">Vehicle Type</label>
+          <select class="form-select" name="vehicle_type">
+            <option value="">Any Vehicle Type</option>
+            <option value="bike">Bike</option>
+            <option value="car">Car</option>
+            <option value="truck">Truck</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">
+          <i class="fas fa-search me-2"></i> Search Parking
+        </button>
+      </form>
+      
+      <div class="text-center mt-3">
+        <p class="text-muted mb-2">Quick Actions:</p>
+        <a href="{% url 'customer_dashboard' %}" class="btn btn-outline-success me-2">
+          <i class="fas fa-tachometer-alt me-2"></i> My Dashboard
+        </a>
+        <a href="{% url 'customer_search' %}" class="btn btn-outline-primary">
+          <i class="fas fa-list me-2"></i> View All Places
+        </a>
+      </div>
+      
+    {% else %}
+      <!-- Unauthenticated users - show login/register buttons -->
+      <div class="text-center">
+        <div class="mb-4">
+          <h4 class="text-muted">Ready to find parking?</h4>
+          <p class="text-muted">Sign in or create an account to start searching for parking spots</p>
+        </div>
+        
+        <div class="d-grid gap-3">
+          <a href="{% url 'login' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-sign-in-alt me-2"></i> Sign In
+          </a>
+          <a href="{% url 'signup' %}" class="btn btn-outline-primary btn-lg">
+            <i class="fas fa-user-plus me-2"></i> Create Account
+          </a>
+        </div>
+        
+        <div class="mt-4">
+          <p class="text-muted small">
+            <i class="fas fa-info-circle me-1"></i>
+            Join thousands of users who trust ParkEasy for their parking needs
+          </p>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+
+<!-- ================= FEATURE SECTION ================= -->
+<section class="feature-section text-center my-5">
+  <div class="feature-container">
+    <div class="feature-image mb-3">
+      <img src="{% static 'accounts/images/driv.png' %}" alt="Car Image">
+    </div>
+    <div class="feature-text">
+      <h1>
+        <span class="blue">DRIVE</span> <br>
+        <span class="dark">ARRIVE</span> <br>
+        <span class="blue">& PARK</span>
+      </h1>
+      <p>Enter easily with your mobile parking pass</p>
+      <p>Your space is waiting – pull in and go do your thing</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REGISTER SECTION ================= -->
+<section id="register" class="register-section py-5" style="background-color: #ffffff;">
+  <div class="container">
+    <div class="row align-items-center">
+      <!-- Left side: Info -->
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <h2 class="fw-bold mb-4">🅿 Register Your Parking Place</h2>
+        <p class="lead text-muted">
+          Have an empty parking spot? Turn it into extra income!
+          With <strong>ParkEasy</strong>, any parking owner can register their place and earn money by
+          allowing customers to book and park through our platform.
+        </p>
+        <ul class="list-unstyled mt-3">
+          <li>✅ List your parking spot in minutes</li>
+          <li>✅ Earn money whenever someone parks</li>
+          <li>✅ Secure bookings & easy payments</li>
+          <li>✅ Help drivers find stress-free parking</li>
+        </ul>
+        <a href="#register-form" class="btn-gradient mt-3">🚀 Start Earning Today</a>
+      </div>
+      <div class="col-lg-6">
+        <div class="card shadow-lg border-0 rounded-4" id="register-form">
+          <div class="card-body p-4">
+            <h4 class="text-center mb-3">Register Your Spot</h4>
+            <img src="{% static 'accounts/images/p_board.jpg' %}" alt="" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TESTIMONIALS SECTION ================= -->
+<section id="testimonials" class="py-5 bg-light">
+  <div class="container">
+    <h2 class="text-center mb-5">What Our Users Say</h2>
+    <div class="row">
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <p class="card-text text-muted mb-3">"ParkEasy made finding parking so simple! I booked a spot in seconds and saved so much time."</p>
+            <h6 class="card-title fw-bold">Sarah Johnson</h6>
+            <small class="text-muted">Customer</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <p class="card-text text-muted mb-3">"Managing my parking lot has never been easier. The dashboard is intuitive and helps me track everything."</p>
+            <h6 class="card-title fw-bold">Mike Patel</h6>
+            <small class="text-muted">Parking Owner</small>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4 mb-4">
+        <div class="card h-100">
+          <div class="card-body text-center">
+            <p class="card-text text-muted mb-3">"The admin panel gives me full control over the platform. It's efficient and easy to use!"</p>
+            <h6 class="card-title fw-bold">Emily Chen</h6>
+            <small class="text-muted">Admin</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

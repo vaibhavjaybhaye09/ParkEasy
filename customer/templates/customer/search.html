@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block title %}Search Parking{% endblock %}
+{% block content %}
+<div class="container">
+  <h3 class="mb-3">Search Parking Places</h3>
+  <form method="get" action="{% url 'customer_search' %}" class="row g-3 mb-4">
+    <div class="col-md-4">
+      <label for="id_city" class="form-label">City</label>
+      <input type="text" id="id_city" name="city" class="form-control" value="{{ city|default:'' }}" placeholder="e.g. Pune">
+    </div>
+    <div class="col-md-4">
+      <label for="id_area" class="form-label">Area</label>
+      <input type="text" id="id_area" name="area" class="form-control" value="{{ area|default:'' }}" placeholder="e.g. Kothrud">
+    </div>
+    <div class="col-md-4">
+      <label for="id_vehicle_type" class="form-label">Vehicle type</label>
+      <select id="id_vehicle_type" name="vehicle_type" class="form-select">
+        {% for val,label in vehicle_choices %}
+        <option value="{{ val }}" {% if vehicle_type == val %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+  </form>
+
+  <div class="row g-3">
+    {% for place in places %}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title"><a href="/customer/place/{{ place.id }}/" class="text-decoration-none">{{ place.name }}</a></h5>
+          <p class="card-text mb-1"><strong>Address:</strong> {{ place.address|default:'-' }}</p>
+          <p class="card-text mb-1"><strong>Location:</strong> {{ place.area|default:'-' }}, {{ place.city }}</p>
+          <p class="card-text mb-1"><strong>Price/hr:</strong> ₹{{ place.price_per_hour }}</p>
+          <p class="card-text"><strong>Vehicle types:</strong> {% if place.allowed_vehicle_types %}{{ place.allowed_vehicle_types }}{% else %}-{% endif %}</p>
+        </div>
+        <div class="card-footer bg-white border-0">
+          <a href="/customer/place/{{ place.id }}/" class="btn btn-outline-primary btn-sm">View</a>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    <div class="col-12"><div class="alert alert-info">No places found.</div></div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

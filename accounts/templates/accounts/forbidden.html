@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block title %}Forbidden · ParkEasy{% endblock %}
+{% block content %}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card shadow-lg border-0 rounded-4 mt-5">
+        <div class="card-body p-5 text-center">
+          <div class="mb-4">
+            <i class="fas fa-ban fa-3x text-danger mb-3"></i>
+            <h2 class="h3 fw-bold text-danger">Access Denied</h2>
+            <p class="text-muted">You don't have permission to access this page.</p>
+          </div>
+          
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle me-2"></i>
+            <strong>Why this happened:</strong><br>
+            You may not have the required role or permissions for this area.
+          </div>
+          
+          <div class="d-grid gap-2">
+            <a href="/" class="btn btn-primary">
+              <i class="fas fa-home me-2"></i>Go to Home
+            </a>
+            <a href="/accounts/login/" class="btn btn-outline-secondary">
+              <i class="fas fa-sign-in-alt me-2"></i>Sign In with Different Account
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

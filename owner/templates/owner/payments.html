@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Owner Payments{% endblock %}
+{% block content %}
+<h3>Payments</h3>
+<table class="table">
+  <thead><tr><th>ID</th><th>Booking</th><th>Place</th><th>Slot</th><th>Amount</th><th>Status</th><th>Time</th></tr></thead>
+  <tbody>
+    {% for p in payments %}
+    <tr>
+      <td>{{ p.id }}</td>
+      <td>#{{ p.booking.id }}</td>
+      <td>{{ p.booking.slot.place.name }}</td>
+      <td>{{ p.booking.slot.code }}</td>
+      <td>₹{{ p.amount }}</td>
+      <td>{{ p.status }}</td>
+      <td>{{ p.created_at }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="7">No payments yet.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
+

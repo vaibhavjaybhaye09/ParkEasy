@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Book Parking{% endblock %}
+{% block content %}
+<h3>Book Slot {{ slot.code }} at {{ slot.place.name }}</h3>
+<form method="post">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label>Start Time</label>
+    <input class="form-control" type="datetime-local" name="start_time" required>
+  </div>
+  <div class="mb-3">
+    <label>End Time</label>
+    <input class="form-control" type="datetime-local" name="end_time" required>
+  </div>
+  <button class="btn btn-primary" type="submit">Confirm & Pay</button>
+</form>
+{% endblock %}
+

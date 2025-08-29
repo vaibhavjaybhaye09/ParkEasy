@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+{% block title %}Add Parking Place - ParkEasy{% endblock %}
+{% block content %}
+
+<style>
+  /* Custom styles for the form */
+  .form-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 2.5rem;
+    margin: 2rem auto;
+    max-width: 800px;
+  }
+
+  .form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #1e3a8a;
+  }
+
+  .form-header h3 {
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .form-header p {
+    color: #6c757d;
+    font-size: 1.1rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-label {
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  .form-control, .form-select {
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: #fff;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+  }
+
+  .btn-submit {
+    background: linear-gradient(45deg, #1e3a8a, #3b82f6);
+    border: none;
+    border-radius: 10px;
+    padding: 0.875rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .btn-submit:hover {
+    background: linear-gradient(45deg, #3b82f6, #1e3a8a);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+  }
+
+  .vehicle-types-container {
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .vehicle-types-legend {
+    font-weight: 600;
+    color: #374151;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+
+  .error-text {
+    color: #dc3545;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+
+  .required-asterisk {
+    color: #dc3545;
+    margin-left: 3px;
+  }
+
+  .input-icon {
+    position: relative;
+  }
+
+  .input-icon i {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    z-index: 10;
+  }
+
+  .input-icon .form-control {
+    padding-left: 2.5rem;
+  }
+
+  /* Area field animation */
+  #area-field {
+    transition: all 0.3s ease;
+    overflow: hidden;
+  }
+
+  .fade-in {
+    opacity: 1;
+    max-height: 200px;
+  }
+
+  .fade-out {
+    opacity: 0.5;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Progress indicator */
+  .form-progress {
+    background: #e5e7eb;
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .form-progress-bar {
+    background: linear-gradient(45deg, #1e3a8a, #3b82f6);
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 2px;
+  }
+</style>
+
+<div class="container">
+  <div class="form-container">
+    <!-- Header -->
+    <div class="form-header">
+      <h3><i class="fas fa-parking me-2"></i>Add New Parking Place</h3>
+      <p>Register your parking space and start earning money today!</p>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="form-progress">
+      <div class="form-progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- Form -->
+    <form method="post" id="parkingForm">
+  {% csrf_token %}
+      
+      <div class="row">
+        <!-- Name Field -->
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_name" class="form-label">
+              <i class="fas fa-map-marker-alt me-2"></i>Place Name<span class="required-asterisk">*</span>
+            </label>
+            <div class="input-icon">
+              <input type="text" class="form-control" id="id_name" name="name" 
+                     placeholder="e.g., Central Mall Parking" required>
+            </div>
+            {% if form.name.errors %}
+              {% for error in form.name.errors %}
+                <span class="error-text">{{ error }}</span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- City Field -->
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_city" class="form-label">
+              <i class="fas fa-city me-2"></i>City<span class="required-asterisk">*</span>
+            </label>
+            <select class="form-select" id="id_city" name="city" required>
+              <option value="">Choose a city...</option>
+              <option value="Pune">Pune</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Jalna">Jalna</option>
+            </select>
+            {% if form.city.errors %}
+              {% for error in form.city.errors %}
+                <span class="error-text">{{ error }}</span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Address Field -->
+      <div class="form-group">
+        <label for="id_address" class="form-label">
+          <i class="fas fa-home me-2"></i>Full Address<span class="required-asterisk">*</span>
+        </label>
+        <textarea class="form-control" id="id_address" name="address" rows="3" 
+                  placeholder="Enter complete address with landmarks" required></textarea>
+        {% if form.address.errors %}
+          {% for error in form.address.errors %}
+            <span class="error-text">{{ error }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Area Field (Conditional for Pune) -->
+      <div class="form-group fade-out" id="area-field">
+        <label for="id_area" class="form-label">
+          <i class="fas fa-map-pin me-2"></i>Area<span class="required-asterisk">*</span>
+        </label>
+        <select class="form-select" id="id_area" name="area">
+          <option value="">Select area...</option>
+          <option value="Karvenagar">Karvenagar</option>
+          <option value="Deccan">Deccan</option>
+          <option value="Shivaji Nagar">Shivaji Nagar</option>
+          <option value="Warje">Warje</option>
+        </select>
+        {% if form.area.errors %}
+          {% for error in form.area.errors %}
+            <span class="error-text">{{ error }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <div class="row">
+        <!-- Price Field -->
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_price_per_hour" class="form-label">
+              <i class="fas fa-rupee-sign me-2"></i>Price per Hour (₹)<span class="required-asterisk">*</span>
+            </label>
+            <input type="number" class="form-control" id="id_price_per_hour" name="price_per_hour" 
+                   placeholder="e.g., 50" min="1" required>
+            {% if form.price_per_hour.errors %}
+              {% for error in form.price_per_hour.errors %}
+                <span class="error-text">{{ error }}</span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Number of Slots -->
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_number_of_slots" class="form-label">
+              <i class="fas fa-car me-2"></i>Number of Slots<span class="required-asterisk">*</span>
+            </label>
+            <input type="number" class="form-control" id="id_number_of_slots" name="number_of_slots" 
+                   placeholder="e.g., 20" min="1" required>
+            {% if form.number_of_slots.errors %}
+              {% for error in form.number_of_slots.errors %}
+                <span class="error-text">{{ error }}</span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Description Field -->
+      <div class="form-group">
+        <label for="id_description" class="form-label">
+          <i class="fas fa-info-circle me-2"></i>Description
+        </label>
+        <textarea class="form-control" id="id_description" name="description" rows="4" 
+                  placeholder="Additional details about your parking place (optional)"></textarea>
+        {% if form.description.errors %}
+          {% for error in form.description.errors %}
+            <span class="error-text">{{ error }}</span>
+          {% endfor %}
+        {% endif %}
+      </div>
+
+      <!-- Vehicle Types (bind to form field) -->
+      <div class="form-group">
+        <fieldset class="vehicle-types-container">
+          <legend class="vehicle-types-legend">
+            <i class="fas fa-car me-2"></i>Allowed Vehicle Types
+          </legend>
+          {{ form.allowed_vehicle_types_field }}
+          {% if form.allowed_vehicle_types_field.errors %}
+            {% for error in form.allowed_vehicle_types_field.errors %}
+              <span class="error-text">{{ error }}</span>
+            {% endfor %}
+          {% endif %}
+        </fieldset>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="text-center">
+        <button type="submit" class="btn-submit">
+          <i class="fas fa-plus-circle me-2"></i>Create Parking Place
+        </button>
+  </div>
+</form>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const citySelect = document.getElementById('id_city');
+    const areaField = document.getElementById('area-field');
+    const areaInput = document.getElementById('id_area');
+    const progressBar = document.getElementById('progressBar');
+    const form = document.getElementById('parkingForm');
+
+    // Toggle area field based on city selection
+    function toggleAreaRequirement() {
+        const isPune = citySelect && citySelect.value === 'Pune';
+        
+        if (isPune) {
+            areaField.classList.remove('fade-out');
+            areaField.classList.add('fade-in');
+            if (areaInput) {
+                areaInput.required = true;
+            }
+        } else {
+            areaField.classList.remove('fade-in');
+            areaField.classList.add('fade-out');
+            if (areaInput) {
+                areaInput.required = false;
+                areaInput.value = '';
+            }
+        }
+        updateProgress();
+    }
+
+    // Update progress bar based on filled fields
+    function updateProgress() {
+        const requiredFields = form.querySelectorAll('input[required], select[required], textarea[required]');
+        let filledFields = 0;
+        
+        requiredFields.forEach(field => {
+            if (field.value.trim() !== '') {
+                filledFields++;
+            }
+        });
+        
+        const progress = (filledFields / requiredFields.length) * 100;
+        progressBar.style.width = progress + '%';
+    }
+
+    // Event listeners
+    if (citySelect) {
+        citySelect.addEventListener('change', toggleAreaRequirement);
+        toggleAreaRequirement(); // Initial call
+    }
+
+    // Update progress on input changes
+    const allInputs = form.querySelectorAll('input, select, textarea');
+    allInputs.forEach(input => {
+        input.addEventListener('input', updateProgress);
+        input.addEventListener('change', updateProgress);
+    });
+
+    // Initial progress update
+    updateProgress();
+
+    // Form submission with loading state
+    form.addEventListener('submit', function(e) {
+        const submitBtn = form.querySelector('.btn-submit');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating...';
+        submitBtn.disabled = true;
+    });
+});
+</script>
+
+{% endblock %}
