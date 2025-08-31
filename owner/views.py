@@ -17,7 +17,22 @@ def dashboard(request):
     total_places = places.count()
     total_slots = ParkingSlot.objects.filter(place__owner=request.user).count()
     booked_slots = ParkingSlot.objects.filter(place__owner=request.user, is_available=False).count()
-    active_bookings = Booking.objects.filter(slot__place__owner=request.user, status='active').select_related('customer', 'slot', 'slot__place').order_by('-start_time')[:5]
+    
+    # Get recent bookings with vehicle details
+    recent_bookings = Booking.objects.filter(
+        slot__place__owner=request.user
+    ).select_related('customer', 'slot', 'slot__place').order_by('-created_at')[:10]
+    
+    # Get active bookings
+    active_bookings = Booking.objects.filter(
+        slot__place__owner=request.user, 
+        status__in=['active', 'pending']
+    ).select_related('customer', 'slot', 'slot__place').order_by('-start_time')[:5]
+    
+    # Get booking statistics
+    total_bookings = Booking.objects.filter(slot__place__owner=request.user).count()
+    completed_bookings = Booking.objects.filter(slot__place__owner=request.user, status='completed').count()
+    
     profile = request.user
     return render(request, 'owner/panel.html', {
         'places': places,
@@ -25,6 +40,9 @@ def dashboard(request):
         'total_slots': total_slots,
         'booked_slots': booked_slots,
         'active_bookings': active_bookings,
+        'recent_bookings': recent_bookings,
+        'total_bookings': total_bookings,
+        'completed_bookings': completed_bookings,
         'profile': profile,
     })
 
@@ -33,7 +51,7 @@ def dashboard(request):
 @role_required('place_owner')
 def add_place(request):
     if request.method == 'POST':
-        form = ParkingPlaceForm(request.POST)
+        form = ParkingPlaceForm(request.POST, request.FILES)
         if form.is_valid():
             city = form.cleaned_data.get('city')
             area = form.cleaned_data.get('area')
@@ -59,7 +77,7 @@ def add_place(request):
 def edit_place(request, place_id: int):
     place = get_object_or_404(ParkingPlace, id=place_id, owner=request.user)
     if request.method == 'POST':
-        form = ParkingPlaceForm(request.POST, instance=place)
+        form = ParkingPlaceForm(request.POST, request.FILES, instance=place)
         if form.is_valid():
             city = form.cleaned_data.get('city')
             area = form.cleaned_data.get('area')
@@ -144,8 +162,28 @@ def slot_delete(request, slot_id: int):
 @login_required
 @role_required('place_owner')
 def bookings(request):
-    bookings_qs = Booking.objects.filter(slot__place__owner=request.user).select_related('customer', 'slot', 'slot__place').order_by('-created_at')
-    return render(request, 'owner/bookings.html', {'bookings': bookings_qs})
+    # Get all bookings with vehicle details and customer info
+    bookings_qs = Booking.objects.filter(
+        slot__place__owner=request.user
+    ).select_related('customer', 'slot', 'slot__place').order_by('-created_at')
+    
+    # Filter by status if provided
+    status_filter = request.GET.get('status')
+    if status_filter:
+        bookings_qs = bookings_qs.filter(status=status_filter)
+    
+    # Filter by vehicle type if provided
+    vehicle_type = request.GET.get('vehicle_type')
+    if vehicle_type:
+        bookings_qs = bookings_qs.filter(vehicle_type=vehicle_type)
+    
+    return render(request, 'owner/bookings.html', {
+        'bookings': bookings_qs,
+        'status_filter': status_filter,
+        'vehicle_type_filter': vehicle_type,
+        'status_choices': Booking.STATUS_CHOICES,
+        'vehicle_type_choices': Booking.VEHICLE_TYPE_CHOICES,
+    })
 
 
 @login_required
@@ -158,19 +196,26 @@ def payments(request):
 @login_required
 @role_required('place_owner')
 def booked_slots(request):
-    # Get all booked slots with customer details
+    # Get all booked slots with customer details and vehicle information
     booked_slots = ParkingSlot.objects.filter(
         place__owner=request.user, 
         is_available=False
-    ).select_related('place').prefetch_related('booking_set__customer')
+    ).select_related('place').prefetch_related('bookings__customer')
     
-    # Get active bookings for these slots
+    # Get active bookings for these slots with vehicle details
     active_bookings = Booking.objects.filter(
         slot__place__owner=request.user,
         status__in=['active', 'pending']
     ).select_related('customer', 'slot', 'slot__place').order_by('-start_time')
     
+    # Get completed bookings for history
+    completed_bookings = Booking.objects.filter(
+        slot__place__owner=request.user,
+        status='completed'
+    ).select_related('customer', 'slot', 'slot__place').order_by('-end_time')[:20]
+    
     return render(request, 'owner/booked_slots.html', {
         'booked_slots': booked_slots,
         'active_bookings': active_bookings,
+        'completed_bookings': completed_bookings,
     })

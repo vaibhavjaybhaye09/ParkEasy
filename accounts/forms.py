@@ -60,3 +60,58 @@ class ResendOTPForm(forms.Form):
             'placeholder': 'Enter your email address'
         })
     )
+
+
+class ForgotPasswordForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Enter your email address'
+        }),
+        help_text='Enter the email address associated with your account'
+    )
+
+
+class PasswordResetOTPForm(forms.Form):
+    otp = forms.CharField(
+        max_length=6,
+        min_length=6,
+        widget=forms.TextInput(attrs={
+            'class': 'form-control text-center',
+            'placeholder': 'Enter 6-digit OTP',
+            'style': 'font-size: 1.5rem; letter-spacing: 0.5rem;'
+        }),
+        help_text='Enter the 6-digit code sent to your email'
+    )
+
+
+class PasswordResetForm(forms.Form):
+    password1 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Enter new password',
+            'minlength': '8'
+        }),
+        help_text='Create a new password (minimum 8 characters)'
+    )
+    password2 = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control form-control-lg',
+            'placeholder': 'Confirm new password',
+            'minlength': '8'
+        }),
+        help_text='Enter the same password again'
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password1 = cleaned_data.get('password1')
+        password2 = cleaned_data.get('password2')
+        
+        if password1 and password2:
+            if password1 != password2:
+                raise forms.ValidationError("Passwords don't match")
+            if len(password1) < 8:
+                raise forms.ValidationError("Password must be at least 8 characters long")
+        
+        return cleaned_data

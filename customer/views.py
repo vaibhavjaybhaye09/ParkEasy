@@ -5,7 +5,8 @@ from django.utils import timezone
 from datetime import datetime
 from accounts.utils import role_required
 from owner.models import ParkingPlace, ParkingSlot
-from .models import Booking
+from .models import Booking, Receipt
+from .forms import BookingForm
 from django.db import models
 from accounts.forms import UserProfileForm
 
@@ -16,10 +17,17 @@ def dashboard(request):
     total_bookings = Booking.objects.filter(customer=request.user).count()
     upcoming = Booking.objects.filter(customer=request.user, start_time__gte=timezone.now()).count()
     recent_bookings = Booking.objects.filter(customer=request.user).select_related('slot', 'slot__place').order_by('-created_at')[:5]
+    
+    # Get recent receipts
+    recent_receipts = Receipt.objects.filter(booking__customer=request.user).order_by('-created_at')[:3]
+    total_receipts = Receipt.objects.filter(booking__customer=request.user).count()
+    
     ctx = {
         'total_bookings': total_bookings,
         'upcoming_bookings': upcoming,
         'recent_bookings': recent_bookings,
+        'recent_receipts': recent_receipts,
+        'total_receipts': total_receipts,
     }
     return render(request, 'customer/dashboard.html', ctx)
 
@@ -67,25 +75,28 @@ def place_detail(request, place_id: int):
 @role_required('customer')
 def book(request, slot_id: int):
     slot = get_object_or_404(ParkingSlot, id=slot_id, is_available=True)
+    
     if request.method == 'POST':
-        start_time_str = request.POST.get('start_time')
-        end_time_str = request.POST.get('end_time')
-        start_time = datetime.fromisoformat(start_time_str)
-        end_time = datetime.fromisoformat(end_time_str)
-        if start_time >= end_time:
-            messages.error(request, 'End time must be after start time.')
-            return redirect('customer_place_detail', place_id=slot.place.id)
-        booking = Booking.objects.create(
-            customer=request.user,
-            slot=slot,
-            start_time=start_time,
-            end_time=end_time,
-            status='pending',
-        )
-        slot.is_available = False
-        slot.save(update_fields=['is_available'])
-        return redirect(f'/payment/checkout/?booking={booking.id}')
-    return render(request, 'customer/book.html', {'slot': slot})
+        form = BookingForm(request.POST)
+        if form.is_valid():
+            booking = form.save(commit=False)
+            booking.customer = request.user
+            booking.slot = slot
+            booking.status = 'pending'
+            booking.save()
+            
+            # Mark slot as unavailable
+            slot.is_available = False
+            slot.save(update_fields=['is_available'])
+            
+            messages.success(request, f'Booking created successfully! Vehicle: {booking.get_vehicle_type_display()} - {booking.vehicle_number_plate}')
+            return redirect(f'/payment/checkout/?booking={booking.id}')
+        else:
+            messages.error(request, 'Please correct the errors below.')
+    else:
+        form = BookingForm()
+    
+    return render(request, 'customer/book.html', {'slot': slot, 'form': form})
 
 
 @login_required
@@ -93,6 +104,22 @@ def book(request, slot_id: int):
 def my_bookings(request):
     bookings = Booking.objects.filter(customer=request.user).select_related('slot', 'slot__place').order_by('-created_at')
     return render(request, 'customer/mybookings.html', {'bookings': bookings})
+
+
+@login_required
+@role_required('customer')
+def my_receipts(request):
+    """View all receipts for the current customer"""
+    receipts = Receipt.objects.filter(booking__customer=request.user).order_by('-created_at')
+    return render(request, 'customer/my_receipts.html', {'receipts': receipts})
+
+
+@login_required
+@role_required('customer')
+def view_receipt(request, receipt_id):
+    """View a specific receipt"""
+    receipt = get_object_or_404(Receipt, id=receipt_id, booking__customer=request.user)
+    return render(request, 'customer/receipt_detail.html', {'receipt': receipt})
 
 
 @login_required

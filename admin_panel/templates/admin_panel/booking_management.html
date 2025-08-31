@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}Booking Management - Admin Panel{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-calendar-check me-2"></i>Booking Management</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Parking Place</th>
+                                    <th>Slot</th>
+                                    <th>Vehicle</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Status</th>
+                                    <th>Amount</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for booking in bookings %}
+                                <tr>
+                                    <td>{{ booking.id }}</td>
+                                    <td>{{ booking.customer.username }}</td>
+                                    <td>{{ booking.slot.place.name }}</td>
+                                    <td>{{ booking.slot.code }}</td>
+                                    <td>
+                                        {{ booking.get_vehicle_type_display }}<br>
+                                        <small class="text-muted">{{ booking.vehicle_number_plate }}</small>
+                                    </td>
+                                    <td>{{ booking.start_time|date:"M j, Y H:i" }}</td>
+                                    <td>{{ booking.end_time|date:"M j, Y H:i" }}</td>
+                                    <td>
+                                        {% if booking.status == 'pending' %}
+                                            <span class="badge bg-warning">Pending</span>
+                                        {% elif booking.status == 'active' %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% elif booking.status == 'completed' %}
+                                            <span class="badge bg-info">Completed</span>
+                                        {% elif booking.status == 'cancelled' %}
+                                            <span class="badge bg-danger">Cancelled</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>₹{{ booking.total_amount }}</td>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="10" class="text-center">No bookings found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

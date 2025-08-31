@@ -169,7 +169,7 @@
     </div>
 
     <!-- Form -->
-    <form method="post" id="parkingForm">
+    <form method="post" enctype="multipart/form-data" id="parkingForm">
   {% csrf_token %}
       
       <div class="row">
@@ -306,6 +306,38 @@
             {% endfor %}
           {% endif %}
         </fieldset>
+      </div>
+
+      <!-- Image Upload Fields -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_image1" class="form-label">
+              <i class="fas fa-image me-2"></i>Parking Place Image 1
+            </label>
+            <input type="file" class="form-control" id="id_image1" name="image1" accept="image/*">
+            <small class="form-text text-muted">Upload first parking place image (optional)</small>
+            {% if form.image1.errors %}
+              {% for error in form.image1.errors %}
+                <span class="error-text">{{ error }}</span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="id_image2" class="form-label">
+              <i class="fas fa-image me-2"></i>Parking Place Image 2
+            </label>
+            <input type="file" class="form-control" id="id_image2" name="image2" accept="image/*">
+            <small class="form-text text-muted">Upload second parking place image (optional)</small>
+            {% if form.image2.errors %}
+              {% for error in form.image2.errors %}
+                <span class="error-text">{{ error }}</span>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
       </div>
 
       <!-- Submit Button -->

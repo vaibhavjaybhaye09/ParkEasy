@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% block title %}User Detail · Admin Panel{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cogs me-2"></i>Admin Panel
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'admin_panel:dashboard' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a href="{% url 'admin_panel:user_management' %}" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-users me-2"></i>User Management
+                        </a>
+                        <a href="{% url 'admin_panel:booking_management' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-calendar-check me-2"></i>Booking Management
+                        </a>
+                        <a href="{% url 'admin_panel:system_settings' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-cog me-2"></i>System Settings
+                        </a>
+                        <a href="{% url 'admin_panel:activity_log' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-history me-2"></i>Admin Activity Log
+                        </a>
+                        <a href="{% url 'admin_panel:user_activity_log' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-user-clock me-2"></i>User Activity Log
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-user me-2"></i>User Details</h2>
+                <div>
+                    <a href="{% url 'admin_panel:user_management' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Users
+                    </a>
+                </div>
+            </div>
+
+            <!-- User Information -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>User Information
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td><strong>Username:</strong></td>
+                                    <td>{{ user_detail.username }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Email:</strong></td>
+                                    <td>{{ user_detail.email }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Full Name:</strong></td>
+                                    <td>{{ user_detail.first_name }} {{ user_detail.last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Role:</strong></td>
+                                    <td>
+                                        <span class="badge bg-{% if user_detail.role == 'admin' %}danger{% elif user_detail.role == 'place_owner' %}info{% else %}primary{% endif %}">
+                                            {{ user_detail.get_role_display }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Status:</strong></td>
+                                    <td>
+                                        {% if user_detail.is_suspended %}
+                                            <span class="badge bg-danger">Suspended</span>
+                                        {% elif not user_detail.email_verified %}
+                                            <span class="badge bg-warning">Unverified</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Phone:</strong></td>
+                                    <td>{{ user_detail.phone|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Address:</strong></td>
+                                    <td>{{ user_detail.address|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Joined:</strong></td>
+                                    <td>{{ user_detail.date_joined|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                {% if user_detail.is_suspended %}
+                                <tr>
+                                    <td><strong>Suspended:</strong></td>
+                                    <td>{{ user_detail.suspended_at|date:"F d, Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Reason:</strong></td>
+                                    <td>{{ user_detail.suspension_reason }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-tools me-2"></i>Actions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <a href="{% url 'admin_panel:user_edit' user_detail.id %}" class="btn btn-outline-primary">
+                                    <i class="fas fa-edit me-2"></i>Edit User
+                                </a>
+                                
+                                {% if user_detail.is_suspended %}
+                                    <a href="{% url 'admin_panel:user_activate' user_detail.id %}" class="btn btn-outline-success">
+                                        <i class="fas fa-check me-2"></i>Activate User
+                                    </a>
+                                {% else %}
+                                    <a href="{% url 'admin_panel:user_suspend' user_detail.id %}" class="btn btn-outline-warning">
+                                        <i class="fas fa-ban me-2"></i>Suspend User
+                                    </a>
+                                {% endif %}
+                                
+                                <a href="{% url 'admin_panel:user_delete' user_detail.id %}" class="btn btn-outline-danger">
+                                    <i class="fas fa-trash me-2"></i>Delete User
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Activities -->
+            {% if activities %}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-history me-2"></i>Recent Activities
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>Description</th>
+                                            <th>IP Address</th>
+                                            <th>Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for activity in activities %}
+                                        <tr>
+                                            <td>
+                                                <span class="badge bg-info">{{ activity.get_action_display }}</span>
+                                            </td>
+                                            <td>{{ activity.description|default:"-" }}</td>
+                                            <td>{{ activity.ip_address|default:"-" }}</td>
+                                            <td>{{ activity.created_at|date:"M d, Y H:i" }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- User Bookings -->
+            {% if bookings %}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-calendar-check me-2"></i>User Bookings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Booking ID</th>
+                                            <th>Place</th>
+                                            <th>Slot</th>
+                                            <th>Vehicle</th>
+                                            <th>Start Time</th>
+                                            <th>End Time</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for booking in bookings %}
+                                        <tr>
+                                            <td>#{{ booking.id }}</td>
+                                            <td>{{ booking.slot.place.name }}</td>
+                                            <td>{{ booking.slot.code }}</td>
+                                            <td>
+                                                {{ booking.get_vehicle_type_display }}<br>
+                                                <small class="text-muted">{{ booking.vehicle_number_plate }}</small>
+                                            </td>
+                                            <td>{{ booking.start_time|date:"M d, H:i" }}</td>
+                                            <td>{{ booking.end_time|date:"M d, H:i" }}</td>
+                                            <td>
+                                                <span class="badge bg-{% if booking.status == 'active' %}success{% elif booking.status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                                    {{ booking.status|title }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Parking Places (for owners) -->
+            {% if parking_places %}
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-parking me-2"></i>Parking Places
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>City</th>
+                                            <th>Area</th>
+                                            <th>Price/Hour</th>
+                                            <th>Created</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for place in parking_places %}
+                                        <tr>
+                                            <td>{{ place.name }}</td>
+                                            <td>{{ place.city }}</td>
+                                            <td>{{ place.area|default:"-" }}</td>
+                                            <td>₹{{ place.price_per_hour }}</td>
+                                            <td>{{ place.created_at|date:"M d, Y" }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

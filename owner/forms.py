@@ -21,10 +21,22 @@ class ParkingPlaceForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple,
         label='Allowed vehicle types'
     )
+    
+    # Image fields with custom widgets
+    image1 = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+        help_text='Upload first parking place image (optional)'
+    )
+    image2 = forms.ImageField(
+        required=False,
+        widget=forms.FileInput(attrs={'class': 'form-control', 'accept': 'image/*'}),
+        help_text='Upload second parking place image (optional)'
+    )
 
     class Meta:
         model = ParkingPlace
-        fields = ['name', 'address', 'area', 'city', 'price_per_hour', 'description']
+        fields = ['name', 'address', 'area', 'city', 'price_per_hour', 'description', 'image1', 'image2']
         widgets = {
             'city': forms.Select(choices=CITY_CHOICES),
             'area': forms.TextInput(attrs={'placeholder': 'Area (required for Pune)'}),

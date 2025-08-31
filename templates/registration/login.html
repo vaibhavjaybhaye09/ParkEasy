@@ -11,6 +11,8 @@
             <p class="text-muted">Sign in to your ParkEasy account</p>
           </div>
           
+
+          
           {% if form.errors %}
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i class="fas fa-exclamation-triangle me-2"></i>
@@ -56,6 +58,12 @@
                 {{ form.password.errors.0 }}
               </div>
               {% endif %}
+              <!-- Forgot Password Link -->
+              <div class="text-end mt-2">
+                <a href="{% url 'forgot_password' %}" class="text-decoration-none text-primary small">
+                  <i class="fas fa-key me-1"></i>Forgot Password?
+                </a>
+              </div>
             </div>
             
             <!-- Role selection -->
@@ -64,7 +72,7 @@
                 <i class="fas fa-users me-2"></i>Select your role
               </label>
               <div class="row">
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-check border rounded p-3 h-100">
                     <input class="form-check-input" type="radio" name="selected_role" id="roleCustomer" value="customer" checked>
                     <label class="form-check-label fw-semibold" for="roleCustomer">
@@ -73,13 +81,22 @@
                     <small class="d-block text-muted mt-1">Find and book parking spots</small>
                   </div>
                 </div>
-                <div class="col-6">
+                <div class="col-4">
                   <div class="form-check border rounded p-3 h-100">
                     <input class="form-check-input" type="radio" name="selected_role" id="roleOwner" value="place_owner">
                     <label class="form-check-label fw-semibold" for="roleOwner">
                       <i class="fas fa-parking me-2 text-success"></i>Place Owner
                     </label>
                     <small class="d-block text-muted mt-1">Manage your parking places</small>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-check border rounded p-3 h-100">
+                    <input class="form-check-input" type="radio" name="selected_role" id="roleAdmin" value="admin">
+                    <label class="form-check-label fw-semibold" for="roleAdmin">
+                      <i class="fas fa-cogs me-2 text-danger"></i>Admin
+                    </label>
+                    <small class="d-block text-muted mt-1">System administration</small>
                   </div>
                 </div>
               </div>

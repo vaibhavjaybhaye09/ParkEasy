@@ -29,6 +29,36 @@
     {% for place in places %}
     <div class="col-md-4">
       <div class="card h-100">
+        {% if place.has_images %}
+        <div id="carousel-{{ place.id }}" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            {% if place.image1 %}
+            <div class="carousel-item active">
+              <img src="{{ place.image1.url }}" class="d-block w-100" alt="Parking Place Image 1" style="height: 200px; object-fit: cover;">
+            </div>
+            {% endif %}
+            {% if place.image2 %}
+            <div class="carousel-item {% if not place.image1 %}active{% endif %}">
+              <img src="{{ place.image2.url }}" class="d-block w-100" alt="Parking Place Image 2" style="height: 200px; object-fit: cover;">
+            </div>
+            {% endif %}
+          </div>
+          {% if place.images_list|length > 1 %}
+          <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ place.id }}" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ place.id }}" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+          {% endif %}
+        </div>
+        {% else %}
+        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+          <i class="fas fa-parking fa-3x text-muted"></i>
+        </div>
+        {% endif %}
         <div class="card-body">
           <h5 class="card-title"><a href="/customer/place/{{ place.id }}/" class="text-decoration-none">{{ place.name }}</a></h5>
           <p class="card-text mb-1"><strong>Address:</strong> {{ place.address|default:'-' }}</p>

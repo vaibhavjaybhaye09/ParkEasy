@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block title %}User Activity Log - Admin Panel{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-user-clock me-2"></i>User Activity Log</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date/Time</th>
+                                    <th>User</th>
+                                    <th>Action</th>
+                                    <th>Description</th>
+                                    <th>IP Address</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for activity in user_activities %}
+                                <tr>
+                                    <td>{{ activity.created_at|date:"M j, Y H:i" }}</td>
+                                    <td>{{ activity.user.username }}</td>
+                                    <td>
+                                        <span class="badge bg-info">{{ activity.get_action_display }}</span>
+                                    </td>
+                                    <td>{{ activity.description|default:"-" }}</td>
+                                    <td>{{ activity.ip_address|default:"-" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No user activities found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

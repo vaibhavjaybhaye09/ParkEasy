@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
 	<h3 class="mb-3">Edit Parking Place</h3>
-	<form method="post" class="row g-3">
+	<form method="post" enctype="multipart/form-data" class="row g-3">
 	  {% csrf_token %}
 	  <div class="col-md-6">
 		<label for="id_name" class="form-label">Name</label>
@@ -41,6 +41,50 @@
 		  {{ form.allowed_vehicle_types_field }}
 		</fieldset>
 	  </div>
+	  
+	  <!-- Current Images Display -->
+	  {% if place.has_images %}
+	  <div class="col-12">
+		<h5>Current Images:</h5>
+		<div class="row">
+		  {% if place.image1 %}
+		  <div class="col-md-6 mb-3">
+			<div class="card">
+			  <img src="{{ place.image1.url }}" class="card-img-top" alt="Parking Place Image 1" style="height: 200px; object-fit: cover;">
+			  <div class="card-body">
+				<p class="card-text">Image 1</p>
+			  </div>
+			</div>
+		  </div>
+		  {% endif %}
+		  {% if place.image2 %}
+		  <div class="col-md-6 mb-3">
+			<div class="card">
+			  <img src="{{ place.image2.url }}" class="card-img-top" alt="Parking Place Image 2" style="height: 200px; object-fit: cover;">
+			  <div class="card-body">
+				<p class="card-text">Image 2</p>
+			  </div>
+			</div>
+		  </div>
+		  {% endif %}
+		</div>
+	  </div>
+	  {% endif %}
+	  
+	  <!-- Image Upload Fields -->
+	  <div class="col-md-6">
+		<label for="id_image1" class="form-label">Parking Place Image 1</label>
+		{{ form.image1 }}
+		<small class="form-text text-muted">Upload new image to replace current one (optional)</small>
+		{{ form.image1.errors }}
+	  </div>
+	  <div class="col-md-6">
+		<label for="id_image2" class="form-label">Parking Place Image 2</label>
+		{{ form.image2 }}
+		<small class="form-text text-muted">Upload new image to replace current one (optional)</small>
+		{{ form.image2.errors }}
+	  </div>
+	  
 	  <div class="col-12">
 		<button type="submit" class="btn btn-primary">Save</button>
 	  </div>

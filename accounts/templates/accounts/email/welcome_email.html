@@ -38,6 +38,15 @@
             text-align: center;
             margin: 30px 0;
         }
+        .success-message {
+            background-color: #d4edda;
+            border: 2px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            color: #155724;
+        }
         .button {
             display: inline-block;
             background-color: #1e3a8a;
@@ -74,15 +83,25 @@
             <h2>Welcome to ParkEasy!</h2>
         </div>
         
-        <div class="welcome-box">
-            <h3>🎉 Congratulations, {{ username }}!</h3>
-            <p>Your email address has been successfully verified. You're now ready to use ParkEasy!</p>
+        <div class="success-message">
+            <h3>✅ Registration Successful!</h3>
+            <p><strong>Welcome {{ username }}!</strong></p>
+            <p>Your registration has been completed successfully. Your email has been verified and your account is now active.</p>
         </div>
         
-        <p>Welcome to the ParkEasy family! We're excited to have you on board. Here's what you can do now:</p>
+        <div class="welcome-box">
+            <h3>🎉 Welcome to the ParkEasy Family!</h3>
+            <p>You're now ready to use ParkEasy and enjoy stress-free parking experiences!</p>
+        </div>
+        
+        <p><strong>Please login to your account to get started:</strong></p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ site_url }}/login/" class="button">🔐 Login to ParkEasy</a>
+        </div>
         
         <div class="features">
-            <h4>🚗 What's Next?</h4>
+            <h4>🚗 What You Can Do Now:</h4>
             <div class="feature-item">✅ <strong>Search for parking spots</strong> in your area</div>
             <div class="feature-item">✅ <strong>Book parking slots</strong> in advance</div>
             <div class="feature-item">✅ <strong>Manage your bookings</strong> easily</div>
@@ -90,12 +109,6 @@
         </div>
         
         <p><strong>Your account is now fully activated!</strong> You can log in to ParkEasy and start using all features.</p>
-        
-        <p>Ready to get started? Click the button below to access your dashboard:</p>
-        
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="{{ site_url }}" class="button">🚀 Get Started with ParkEasy</a>
-        </div>
         
         <p>If you have any questions or need assistance, don't hesitate to reach out to our support team.</p>
         

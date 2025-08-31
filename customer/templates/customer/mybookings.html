@@ -1,23 +1,114 @@
 {% extends 'base.html' %}
 {% block title %}My Bookings{% endblock %}
 {% block content %}
-<h3>My Bookings</h3>
-<table class="table">
-  <thead><tr><th>ID</th><th>Place</th><th>Slot</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
-  <tbody>
-    {% for b in bookings %}
-    <tr>
-      <td>{{ b.id }}</td>
-      <td>{{ b.slot.place.name }}</td>
-      <td>{{ b.slot.code }}</td>
-      <td>{{ b.start_time }}</td>
-      <td>{{ b.end_time }}</td>
-      <td>{{ b.status }}</td>
-    </tr>
-    {% empty %}
-    <tr><td colspan="6"><div class="alert alert-info">No bookings yet.</div></td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-12">
+      <div class="card shadow-lg border-0 rounded-4 mt-4">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">
+            <i class="fas fa-list me-2"></i>My Bookings
+          </h3>
+        </div>
+        <div class="card-body">
+          {% if bookings %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-light">
+                  <tr>
+                    <th>Booking ID</th>
+                    <th>Place</th>
+                    <th>Slot</th>
+                    <th>Vehicle Details</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Duration</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for booking in bookings %}
+                  <tr>
+                    <td>
+                      <strong>#{{ booking.id }}</strong>
+                    </td>
+                    <td>
+                      <div>
+                        <strong>{{ booking.slot.place.name }}</strong><br>
+                        <small class="text-muted">{{ booking.slot.place.area }}, {{ booking.slot.place.city }}</small>
+                      </div>
+                    </td>
+                    <td>
+                      <span class="badge bg-primary">{{ booking.slot.code }}</span>
+                    </td>
+                    <td>
+                      <div>
+                        <i class="fas fa-car me-1"></i>
+                        <strong>{{ booking.get_vehicle_type_display }}</strong><br>
+                        <small class="text-muted">{{ booking.vehicle_number_plate }}</small>
+                      </div>
+                    </td>
+                    <td>{{ booking.start_time|date:"M d, Y H:i" }}</td>
+                    <td>{{ booking.end_time|date:"M d, Y H:i" }}</td>
+                    <td>
+                      <span class="badge bg-info">{{ booking.duration_hours }}h</span>
+                    </td>
+                    <td>
+                      {% if booking.status == 'pending' %}
+                        <span class="badge bg-warning">Pending</span>
+                      {% elif booking.status == 'confirmed' %}
+                        <span class="badge bg-success">Confirmed</span>
+                      {% elif booking.status == 'active' %}
+                        <span class="badge bg-success">Active</span>
+                      {% elif booking.status == 'completed' %}
+                        <span class="badge bg-secondary">Completed</span>
+                      {% elif booking.status == 'cancelled' %}
+                        <span class="badge bg-danger">Cancelled</span>
+                      {% else %}
+                        <span class="badge bg-primary">{{ booking.status|title }}</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <div class="btn-group" role="group">
+                        {% if booking.status == 'pending' %}
+                          <a href="{% url 'checkout' %}?booking={{ booking.id }}" class="btn btn-sm btn-success">
+                            <i class="fas fa-credit-card"></i> Pay Now
+                          </a>
+                        {% endif %}
+                        
+                        {% if booking.status == 'confirmed' or booking.status == 'active' or booking.status == 'completed' %}
+                          {% if booking.receipt %}
+                            <a href="{% url 'customer_view_receipt' booking.receipt.id %}" class="btn btn-sm btn-primary">
+                              <i class="fas fa-receipt"></i> View Receipt
+                            </a>
+                          {% else %}
+                            <a href="{% url 'generate_receipt' booking.id %}" class="btn btn-sm btn-info">
+                              <i class="fas fa-plus"></i> Generate Receipt
+                            </a>
+                          {% endif %}
+                        {% endif %}
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% else %}
+            <div class="text-center py-5">
+              <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">No bookings yet</h5>
+              <p class="text-muted">Start by searching for parking places and making your first booking!</p>
+              <a href="{% url 'customer_search' %}" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i>Find Parking
+              </a>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 

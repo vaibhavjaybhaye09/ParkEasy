@@ -255,10 +255,10 @@
 
 					<div class="content-section" id="booked">
 						<div class="d-flex justify-content-between align-items-center mb-3">
-							<h3><i class="fas fa-car me-2"></i> Booked Slots</h3>
+							<h3><i class="fas fa-car me-2"></i> Recent Bookings</h3>
 							<a href="{% url 'owner_booked_slots' %}" class="btn btn-outline-primary">View All Booked Slots</a>
 						</div>
-						{% if active_bookings %}
+						{% if recent_bookings %}
 							<div class="table-responsive">
 								<table class="table">
 									<thead>
@@ -266,27 +266,42 @@
 											<th>Customer</th>
 											<th>Place</th>
 											<th>Slot</th>
+											<th>Vehicle</th>
 											<th>Start Time</th>
 											<th>End Time</th>
 											<th>Status</th>
 										</tr>
 									</thead>
 									<tbody>
-										{% for booking in active_bookings %}
+										{% for booking in recent_bookings %}
 										<tr>
 											<td>{{ booking.customer.username }}</td>
 											<td>{{ booking.slot.place.name }}</td>
 											<td>{{ booking.slot.code }}</td>
+											<td>
+												<small class="text-muted">{{ booking.get_vehicle_type_display }}</small><br>
+												<strong>{{ booking.vehicle_number_plate }}</strong>
+											</td>
 											<td>{{ booking.start_time|date:"M d, H:i" }}</td>
 											<td>{{ booking.end_time|date:"M d, H:i" }}</td>
-											<td><span class="badge bg-warning">{{ booking.status }}</span></td>
+											<td>
+												{% if booking.status == 'pending' %}
+													<span class="badge bg-warning">Pending</span>
+												{% elif booking.status == 'active' %}
+													<span class="badge bg-success">Active</span>
+												{% elif booking.status == 'completed' %}
+													<span class="badge bg-secondary">Completed</span>
+												{% else %}
+													<span class="badge bg-danger">{{ booking.status|title }}</span>
+												{% endif %}
+											</td>
 										</tr>
 										{% endfor %}
 									</tbody>
 								</table>
 							</div>
 						{% else %}
-							<p class="text-muted">No active bookings at the moment.</p>
+							<p class="text-muted">No bookings at the moment.</p>
 						{% endif %}
 					</div>
 				</div>

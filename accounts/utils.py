@@ -45,6 +45,11 @@ def send_otp_email(user_email, otp, username):
     plain_message = strip_tags(html_message)
     
     try:
+        print(f"Attempting to send OTP email to: {user_email}")
+        print(f"OTP: {otp}")
+        print(f"Email settings - Host: {settings.EMAIL_HOST}, Port: {settings.EMAIL_PORT}")
+        print(f"From email: {settings.DEFAULT_FROM_EMAIL}")
+        
         send_mail(
             subject=subject,
             message=plain_message,
@@ -53,9 +58,11 @@ def send_otp_email(user_email, otp, username):
             recipient_list=[user_email],
             fail_silently=False,
         )
+        print(f"OTP email sent successfully to {user_email}")
         return True
     except Exception as e:
-        print(f"Error sending email: {e}")
+        print(f"Error sending OTP email to {user_email}: {e}")
+        print(f"Error type: {type(e).__name__}")
         return False
 
 
@@ -63,7 +70,12 @@ def send_welcome_email(user_email, username):
     """
     Send welcome email after successful verification
     """
-    subject = 'Welcome to ParkEasy!'
+    subject = 'Welcome to ParkEasy - Registration Successful!'
+    
+    print(f"Sending welcome email to: {user_email}")
+    print(f"Username: {username}")
+    print(f"Email settings - Host: {settings.EMAIL_HOST}, Port: {settings.EMAIL_PORT}")
+    print(f"From email: {settings.DEFAULT_FROM_EMAIL}")
     
     html_message = render_to_string('accounts/email/welcome_email.html', {
         'username': username,
@@ -82,9 +94,11 @@ def send_welcome_email(user_email, username):
             recipient_list=[user_email],
             fail_silently=False,
         )
+        print(f"Welcome email sent successfully to {user_email}")
         return True
     except Exception as e:
-        print(f"Error sending welcome email: {e}")
+        print(f"Error sending welcome email to {user_email}: {e}")
+        print(f"Error type: {type(e).__name__}")
         return False
 
 
@@ -93,6 +107,10 @@ def send_password_reset_email(user_email, reset_link, username):
     Send password reset email
     """
     subject = 'Reset Your Password - ParkEasy'
+    
+    print(f"Sending password reset email to: {user_email}")
+    print(f"Reset link: {reset_link}")
+    print(f"Username: {username}")
     
     html_message = render_to_string('accounts/email/password_reset.html', {
         'username': username,
@@ -111,7 +129,9 @@ def send_password_reset_email(user_email, reset_link, username):
             recipient_list=[user_email],
             fail_silently=False,
         )
+        print(f"Password reset email sent successfully to {user_email}")
         return True
     except Exception as e:
-        print(f"Error sending password reset email: {e}")
+        print(f"Error sending password reset email to {user_email}: {e}")
+        print(f"Error type: {type(e).__name__}")
         return False

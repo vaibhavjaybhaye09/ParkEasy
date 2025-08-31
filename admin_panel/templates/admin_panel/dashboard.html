@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard · ParkEasy{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-cogs me-2"></i>Admin Panel
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="{% url 'admin_panel:dashboard' %}" class="list-group-item list-group-item-action active">
+                            <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                        </a>
+                        <a href="{% url 'admin_panel:user_management' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-users me-2"></i>User Management
+                        </a>
+                        <a href="{% url 'admin_panel:booking_management' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-calendar-check me-2"></i>Booking Management
+                        </a>
+                        <a href="{% url 'admin_panel:system_settings' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-cog me-2"></i>System Settings
+                        </a>
+                        <a href="{% url 'admin_panel:activity_log' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-history me-2"></i>Admin Activity Log
+                        </a>
+                        <a href="{% url 'admin_panel:user_activity_log' %}" class="list-group-item list-group-item-action">
+                            <i class="fas fa-user-clock me-2"></i>User Activity Log
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard</h2>
+                <div class="text-muted">
+                    Welcome back, <strong>{{ user.username }}</strong>!
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="row mb-4">
+                <!-- User Statistics -->
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ total_users }}</h4>
+                                    <small>Total Users</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ total_customers }}</h4>
+                                    <small>Customers</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-user fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ total_owners }}</h4>
+                                    <small>Parking Owners</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-parking fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ suspended_users }}</h4>
+                                    <small>Suspended Users</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-ban fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking and Revenue Statistics -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-secondary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ total_bookings }}</h4>
+                                    <small>Total Bookings</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-calendar fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ active_bookings }}</h4>
+                                    <small>Active Bookings</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-play fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">{{ total_places }}</h4>
+                                    <small>Parking Places</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-map-marker-alt fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-dark text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="mb-0">₹{{ total_revenue|floatformat:0 }}</h4>
+                                    <small>Total Revenue</small>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-rupee-sign fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activities and Bookings -->
+            <div class="row">
+                <!-- Recent Admin Actions -->
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-history me-2"></i>Recent Admin Actions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_admin_actions %}
+                                <div class="list-group list-group-flush">
+                                    {% for action in recent_admin_actions %}
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>{{ action.admin_user.username }}</strong>
+                                                <small class="text-muted d-block">{{ action.get_action_display }}</small>
+                                                {% if action.target_user %}
+                                                    <small class="text-muted">Target: {{ action.target_user.username }}</small>
+                                                {% endif %}
+                                            </div>
+                                            <small class="text-muted">{{ action.created_at|timesince }} ago</small>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">No recent admin actions.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-calendar-check me-2"></i>Recent Bookings
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            {% if recent_bookings %}
+                                <div class="list-group list-group-flush">
+                                    {% for booking in recent_bookings %}
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <strong>{{ booking.customer.username }}</strong>
+                                                <small class="text-muted d-block">{{ booking.slot.place.name }} - {{ booking.slot.code }}</small>
+                                                <small class="text-muted">{{ booking.get_vehicle_type_display }} - {{ booking.vehicle_number_plate }}</small>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="badge bg-{% if booking.status == 'active' %}success{% elif booking.status == 'pending' %}warning{% else %}secondary{% endif %}">
+                                                    {{ booking.status|title }}
+                                                </span>
+                                                <small class="text-muted d-block">{{ booking.created_at|timesince }} ago</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <p class="text-muted">No recent bookings.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-bolt me-2"></i>Quick Actions
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3 mb-2">
+                                    <a href="{% url 'admin_panel:user_management' %}" class="btn btn-outline-primary w-100">
+                                        <i class="fas fa-users me-2"></i>Manage Users
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="{% url 'admin_panel:booking_management' %}" class="btn btn-outline-success w-100">
+                                        <i class="fas fa-calendar-check me-2"></i>View Bookings
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="{% url 'admin_panel:system_settings' %}" class="btn btn-outline-info w-100">
+                                        <i class="fas fa-cog me-2"></i>System Settings
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-2">
+                                    <a href="{% url 'admin_panel:activity_log' %}" class="btn btn-outline-secondary w-100">
+                                        <i class="fas fa-history me-2"></i>Activity Log
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Auto-refresh dashboard stats every 30 seconds
+setInterval(function() {
+    fetch('{% url "admin_panel:ajax_user_stats" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            action: 'get_user_stats'
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update stats if needed
+        console.log('Stats updated:', data);
+    })
+    .catch(error => console.error('Error updating stats:', error));
+}, 30000);
+</script>
+{% endblock %}
