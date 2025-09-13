@@ -6,7 +6,7 @@ body {
 
 .navbar {
     height: 60px;
-    background: linear-gradient(90deg, #1e3a8a 0%, #3b82f6 100%);
+    background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 50%, #87ceeb 100%);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -24,7 +24,7 @@ body {
 }
 
 .navbar-nav .nav-link:hover {
-    color: #93c5fd !important;
+    color: #87ceeb !important;
 }
 
 .nav-link i {
@@ -32,7 +32,7 @@ body {
 }
 
 .footer {
-    background: #1e3a8a url('/static/images/imgi_2.png') no-repeat center left;
+    background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 50%, #87ceeb 100%) url('/static/images/imgi_2.png') no-repeat center left;
     background-size: contain;
     /* fit whole image */
     color: white;
@@ -41,7 +41,7 @@ body {
 }
 
 .footer a {
-    color: #93c5fd;
+    color: #e0f7ff;
     text-decoration: none;
 }
 
@@ -53,6 +53,29 @@ body {
     margin-right: 0.5rem;
 }
 
+/* Social media icons styling */
+.footer .fab {
+    font-size: 1.2rem;
+    color: #e0f7ff;
+    transition: all 0.3s ease;
+    margin-right: 0.5rem;
+}
+
+.footer .fab:hover {
+    color: #87ceeb;
+    transform: translateY(-2px);
+}
+
+/* Footer heart icon */
+.footer .fa-heart {
+    color: #ff6b6b !important;
+}
+
+/* Footer border styling */
+.footer .border-light {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
 /* Custom button styles */
 .btn-gradient {
     display: inline-block;
@@ -60,7 +83,7 @@ body {
     font-size: 1.1rem;
     font-weight: 600;
     color: #fff;
-    background: linear-gradient(45deg, #1e3a8a, #3b82f6);
+    background: linear-gradient(45deg, #0ea5e9, #3b82f6, #87ceeb);
     border: none;
     border-radius: 30px;
     text-decoration: none;
@@ -69,7 +92,7 @@ body {
 }
 
 .btn-gradient:hover {
-    background: linear-gradient(45deg, #3b82f6, #1e3a8a);
+    background: linear-gradient(45deg, #87ceeb, #3b82f6, #0ea5e9);
     transform: translateY(-3px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
     color: white;
@@ -127,7 +150,7 @@ body {
 }
 
 .feature-text .blue {
-    color: #1e3a8a;
+    color: #0ea5e9;
 }
 
 .feature-text .dark {
@@ -142,7 +165,7 @@ body {
 
 /* Register section */
 .register-section h2 {
-    color: #1e3a8a;
+    color: #0ea5e9;
 }
 
 /* Responsive adjustments */
